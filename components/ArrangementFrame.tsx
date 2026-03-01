@@ -53,7 +53,7 @@ export function ArrangementFrame({ id, desks, children, onRemove }: ArrangementF
         height,
         transform: dragTranslate,
       }}
-      className="group pointer-events-none"
+      className="group/frame pointer-events-none"
     >
       <div
         className="h-full w-full rounded-xl border-2 border-dashed border-sky-400/70 bg-sky-400/5"
@@ -78,7 +78,7 @@ export function ArrangementFrame({ id, desks, children, onRemove }: ArrangementF
             e.stopPropagation();
             onRemove();
           }}
-          className="pointer-events-auto absolute -top-3 -right-3 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-white text-xs shadow-sm opacity-0 transition-opacity hover:bg-red-600 group-hover:opacity-100"
+          className="pointer-events-auto absolute -top-3 -right-3 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-white text-xs shadow-sm opacity-0 transition-opacity hover:bg-red-600 group-hover/frame:opacity-100"
           aria-label="Remove arrangement"
         >
           ✕

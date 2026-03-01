@@ -56,7 +56,7 @@ export function Desk({
         transform: `${dragTranslate} scale(${scaleX}, ${scaleY}) rotate(${desk.rotation}deg)`,
       }}
       onContextMenu={onContextMenu}
-      className={`group touch-none ${isDragging ? "z-50 opacity-90" : "z-10"}`}
+      className={`group/desk touch-none ${isDragging ? "z-50 opacity-90" : "z-10"}`}
     >
       <div
         {...attributes}
@@ -131,7 +131,7 @@ export function Desk({
                 e.stopPropagation();
                 onRemove();
               }}
-              className="pointer-events-auto absolute -top-1 -right-1 z-20 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-white text-xs opacity-0 transition-opacity hover:bg-red-600 group-hover:opacity-100"
+              className="pointer-events-auto absolute -top-1 -right-1 z-20 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-white text-xs opacity-0 transition-opacity hover:bg-red-600 group-hover/desk:opacity-100"
               aria-label="Remove desk"
             >
               ✕
