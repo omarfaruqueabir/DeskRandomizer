@@ -105,7 +105,7 @@ export function ContextMenu({
               onClick={() => onLockWithName(desk.assignedName!)}
               className="w-full px-3 py-2 text-left text-sm text-stone-700 hover:bg-stone-100 dark:text-slate-100 dark:hover:bg-slate-800"
             >
-              Lock desk with "{desk.assignedName}"
+              Lock desk with &quot;{desk.assignedName}&quot;
             </button>
           )}
           <div className="relative">

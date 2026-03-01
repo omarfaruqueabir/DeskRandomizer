@@ -16,12 +16,10 @@ interface ArrangementFrameProps {
 }
 
 export function ArrangementFrame({ id, desks, children, onRemove }: ArrangementFrameProps) {
-  if (!desks.length) return null;
-
-  const minX = Math.min(...desks.map((d) => d.x));
-  const minY = Math.min(...desks.map((d) => d.y));
-  const maxX = Math.max(...desks.map((d) => d.x + DESK_WIDTH));
-  const maxY = Math.max(...desks.map((d) => d.y + DESK_HEIGHT + CHAIR_SIZE));
+  const minX = desks.length ? Math.min(...desks.map((d) => d.x)) : 0;
+  const minY = desks.length ? Math.min(...desks.map((d) => d.y)) : 0;
+  const maxX = desks.length ? Math.max(...desks.map((d) => d.x + DESK_WIDTH)) : 0;
+  const maxY = desks.length ? Math.max(...desks.map((d) => d.y + DESK_HEIGHT + CHAIR_SIZE)) : 0;
 
   const padding = 16;
   const width = maxX - minX + padding * 2;
@@ -41,6 +39,8 @@ export function ArrangementFrame({ id, desks, children, onRemove }: ArrangementF
     transform?.x != null && transform?.y != null
       ? ` translate(${transform.x}px, ${transform.y}px)`
       : "";
+
+  if (!desks.length) return null;
 
   return (
     <div
