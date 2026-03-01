@@ -43,6 +43,7 @@ interface DeskActions {
   addDesk: (x?: number, y?: number) => void;
   createArrangement: (rows: number, cols: number) => void;
   moveArrangement: (arrangementId: string, dx: number, dy: number) => void;
+  removeArrangement: (arrangementId: string) => void;
   removeDesk: (id: string) => void;
   moveDesk: (id: string, x: number, y: number) => void;
   rotateDesk: (id: string) => void;
@@ -134,6 +135,12 @@ export const useDeskStore = create<DeskState & DeskActions>()(
               ? { ...d, x: d.x + dx, y: d.y + dy }
               : d
           ),
+        }));
+      },
+
+      removeArrangement: (arrangementId) => {
+        set((state) => ({
+          desks: state.desks.filter((d) => d.arrangementId !== arrangementId),
         }));
       },
 

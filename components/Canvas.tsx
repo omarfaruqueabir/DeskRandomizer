@@ -32,6 +32,7 @@ export function Canvas() {
     setIsDragging,
     removeMode,
     namesList,
+    removeArrangement,
   } = useDeskStore();
 
   const viewportRef = useRef<HTMLDivElement>(null);
@@ -95,6 +96,7 @@ export function Canvas() {
       if (e.button !== 0) return;
       const target = e.target as HTMLElement;
       if (target.closest("[data-desk-id]")) return;
+      if (target.closest("[data-no-pan]")) return;
       setIsPanning(true);
       panStartRef.current = {
         clientX: e.clientX,
@@ -192,6 +194,36 @@ export function Canvas() {
     [zoom]
   );
 
+  // Build a map of arrangementId -> desks for grouped rendering
+  const arrangementMap = desks.reduce((map, desk) => {
+    if (!desk.arrangementId) return map;
+    const id = desk.arrangementId;
+    if (!map.has(id)) map.set(id, []);
+    map.get(id)!.push(desk);
+    return map;
+  }, new Map<string, typeof desks>());
+
+  const renderDeskNode = useCallback(
+    (desk: (typeof desks)[number]) => (
+      <div
+        key={desk.id}
+        data-desk-id={desk.id}
+        style={{ pointerEvents: "auto" }}
+      >
+        <Desk
+          desk={desk}
+          onRemove={() => removeDesk(desk.id)}
+          onContextMenu={(e) => {
+            e.preventDefault();
+            setContextMenu({ x: e.clientX, y: e.clientY, deskId: desk.id });
+          }}
+          removeMode={removeMode}
+        />
+      </div>
+    ),
+    [removeDesk, removeMode]
+  );
+
   return (
     <div className="relative h-full w-full rounded-xl overflow-hidden border border-stone-200 shadow-inner bg-stone-200 dark:border-slate-700 dark:bg-slate-900">
       <div
@@ -234,33 +266,20 @@ export function Canvas() {
                 }}
               />
 
-              {/* Arrangement frames */}
-              {Array.from(
-                desks.reduce((map, desk) => {
-                  if (!desk.arrangementId) return map;
-                  const id = desk.arrangementId;
-                  if (!map.has(id)) map.set(id, []);
-                  map.get(id)!.push(desk);
-                  return map;
-                }, new Map<string, typeof desks>())
-              ).map(([id, groupDesks]) => (
-                <ArrangementFrame key={id} id={`arrangement-${id}`} desks={groupDesks} />
+              {/* Arrangement frames — desks rendered as children so they share the drag transform */}
+              {Array.from(arrangementMap).map(([id, groupDesks]) => (
+                <ArrangementFrame
+                  key={id}
+                  id={`arrangement-${id}`}
+                  desks={groupDesks}
+                  onRemove={() => removeArrangement(id)}
+                >
+                  {groupDesks.map(renderDeskNode)}
+                </ArrangementFrame>
               ))}
 
-              {/* Desks */}
-              {desks.map((desk) => (
-                <div key={desk.id} data-desk-id={desk.id}>
-                  <Desk
-                    desk={desk}
-                    onRemove={() => removeDesk(desk.id)}
-                    onContextMenu={(e) => {
-                      e.preventDefault();
-                      setContextMenu({ x: e.clientX, y: e.clientY, deskId: desk.id });
-                    }}
-                    removeMode={removeMode}
-                  />
-                </div>
-              ))}
+              {/* Standalone desks (not part of any arrangement) */}
+              {desks.filter((d) => !d.arrangementId).map(renderDeskNode)}
             </div>
           </DndContext>
         </div>

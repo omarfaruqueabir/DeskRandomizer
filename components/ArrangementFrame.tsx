@@ -2,6 +2,7 @@
 
 import { useDraggable } from "@dnd-kit/core";
 import type { Desk } from "@/types";
+import type { ReactNode } from "react";
 
 const DESK_WIDTH = 80;
 const DESK_HEIGHT = 60;
@@ -10,9 +11,11 @@ const CHAIR_SIZE = 24;
 interface ArrangementFrameProps {
   id: string;
   desks: Desk[];
+  children?: ReactNode;
+  onRemove?: () => void;
 }
 
-export function ArrangementFrame({ id, desks }: ArrangementFrameProps) {
+export function ArrangementFrame({ id, desks, children, onRemove }: ArrangementFrameProps) {
   if (!desks.length) return null;
 
   const minX = Math.min(...desks.map((d) => d.x));
@@ -50,7 +53,7 @@ export function ArrangementFrame({ id, desks }: ArrangementFrameProps) {
         height,
         transform: dragTranslate,
       }}
-      className="pointer-events-none"
+      className="group pointer-events-none"
     >
       <div
         className="h-full w-full rounded-xl border-2 border-dashed border-sky-400/70 bg-sky-400/5"
@@ -60,12 +63,44 @@ export function ArrangementFrame({ id, desks }: ArrangementFrameProps) {
         type="button"
         {...attributes}
         {...listeners}
+        data-no-pan="true"
         className="pointer-events-auto absolute -top-3 left-2 flex h-5 items-center rounded-full bg-sky-500 px-2 text-[10px] font-medium text-white shadow-sm"
         aria-label="Drag desk arrangement"
       >
         ⇕ Move group
       </button>
+      {/* Remove button in the top-right corner */}
+      {onRemove && (
+        <button
+          type="button"
+          data-no-pan="true"
+          onClick={(e) => {
+            e.stopPropagation();
+            onRemove();
+          }}
+          className="pointer-events-auto absolute -top-3 -right-3 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-white text-xs shadow-sm opacity-0 transition-opacity hover:bg-red-600 group-hover:opacity-100"
+          aria-label="Remove arrangement"
+        >
+          ✕
+        </button>
+      )}
+      {/*
+        Offset container: shifts coordinate origin back to canvas (0,0) so that
+        desk children with position:absolute / left:desk.x / top:desk.y render
+        at the correct canvas positions, while still inheriting this div's
+        CSS transform when the arrangement is dragged.
+      */}
+      {children && (
+        <div
+          style={{
+            position: "absolute",
+            left: -(minX - padding),
+            top: -(minY - padding),
+          }}
+        >
+          {children}
+        </div>
+      )}
     </div>
   );
 }
-
