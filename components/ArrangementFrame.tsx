@@ -1,0 +1,71 @@
+"use client";
+
+import { useDraggable } from "@dnd-kit/core";
+import type { Desk } from "@/types";
+
+const DESK_WIDTH = 80;
+const DESK_HEIGHT = 60;
+const CHAIR_SIZE = 24;
+
+interface ArrangementFrameProps {
+  id: string;
+  desks: Desk[];
+}
+
+export function ArrangementFrame({ id, desks }: ArrangementFrameProps) {
+  if (!desks.length) return null;
+
+  const minX = Math.min(...desks.map((d) => d.x));
+  const minY = Math.min(...desks.map((d) => d.y));
+  const maxX = Math.max(...desks.map((d) => d.x + DESK_WIDTH));
+  const maxY = Math.max(...desks.map((d) => d.y + DESK_HEIGHT + CHAIR_SIZE));
+
+  const padding = 16;
+  const width = maxX - minX + padding * 2;
+  const height = maxY - minY + padding * 2;
+
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+  } = useDraggable({
+    id,
+    data: { type: "arrangement", arrangementId: id },
+  });
+
+  const dragTranslate =
+    transform?.x != null && transform?.y != null
+      ? ` translate(${transform.x}px, ${transform.y}px)`
+      : "";
+
+  return (
+    <div
+      ref={setNodeRef}
+      style={{
+        position: "absolute",
+        left: minX - padding,
+        top: minY - padding,
+        width,
+        height,
+        transform: dragTranslate,
+      }}
+      className="pointer-events-none"
+    >
+      <div
+        className="h-full w-full rounded-xl border-2 border-dashed border-sky-400/70 bg-sky-400/5"
+      />
+      {/* Drag handle in the top-left corner to move the whole arrangement */}
+      <button
+        type="button"
+        {...attributes}
+        {...listeners}
+        className="pointer-events-auto absolute -top-3 left-2 flex h-5 items-center rounded-full bg-sky-500 px-2 text-[10px] font-medium text-white shadow-sm"
+        aria-label="Drag desk arrangement"
+      >
+        ⇕ Move group
+      </button>
+    </div>
+  );
+}
+
