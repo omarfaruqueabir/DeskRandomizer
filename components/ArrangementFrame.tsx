@@ -56,7 +56,7 @@ export function ArrangementFrame({ id, desks, children, onRemove }: ArrangementF
       className="group/frame pointer-events-none"
     >
       <div
-        className="h-full w-full rounded-xl border-2 border-dashed border-sky-400/70 bg-sky-400/5"
+        className="h-full w-full rounded-xl border-2 border-dashed border-sky-400/70 bg-sky-400/5 pointer-events-auto"
       />
       {/* Drag handle in the top-left corner to move the whole arrangement */}
       <button
