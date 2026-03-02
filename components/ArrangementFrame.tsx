@@ -55,20 +55,20 @@ export function ArrangementFrame({ id, desks, children, onRemove }: ArrangementF
       }}
       className="group/frame pointer-events-none"
     >
+      {/* Full-area drag surface — listeners here so any empty space drags the arrangement */}
       <div
-        className="h-full w-full rounded-xl border-2 border-dashed border-sky-400/70 bg-sky-400/5 pointer-events-auto"
-      />
-      {/* Drag handle in the top-left corner to move the whole arrangement */}
-      <button
-        type="button"
         {...attributes}
         {...listeners}
         data-no-pan="true"
-        className="pointer-events-auto absolute -top-3 left-2 flex h-5 items-center rounded-full bg-sky-500 px-2 text-[10px] font-medium text-white shadow-sm"
+        className="h-full w-full rounded-xl border-2 border-dashed border-sky-400/70 bg-sky-400/5 pointer-events-auto cursor-grab active:cursor-grabbing"
         aria-label="Drag desk arrangement"
+      />
+      {/* Label indicating the group is draggable */}
+      <div
+        className="pointer-events-none absolute -top-3 left-2 flex h-5 items-center rounded-full bg-sky-500 px-2 text-[10px] font-medium text-white shadow-sm select-none"
       >
         ⇕ Move group
-      </button>
+      </div>
       {/* Remove button in the top-right corner */}
       {onRemove && (
         <button
