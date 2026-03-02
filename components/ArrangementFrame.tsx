@@ -63,12 +63,6 @@ export function ArrangementFrame({ id, desks, children, onRemove }: ArrangementF
         className="h-full w-full rounded-xl border-2 border-dashed border-sky-400/70 bg-sky-400/5 pointer-events-auto cursor-grab active:cursor-grabbing"
         aria-label="Drag desk arrangement"
       />
-      {/* Label indicating the group is draggable */}
-      <div
-        className="pointer-events-none absolute -top-3 left-2 flex h-5 items-center rounded-full bg-sky-500 px-2 text-[10px] font-medium text-white shadow-sm select-none"
-      >
-        ⇕ Move group
-      </div>
       {/* Remove button in the top-right corner */}
       {onRemove && (
         <button
