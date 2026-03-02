@@ -186,9 +186,10 @@ export function Canvas() {
     (args: { transform: { x: number; y: number; scaleX?: number; scaleY?: number } }) => {
       const { transform } = args;
       return {
-        ...transform,
         x: transform.x / zoom,
         y: transform.y / zoom,
+        scaleX: transform.scaleX ?? 1,
+        scaleY: transform.scaleY ?? 1,
       };
     },
     [zoom]
